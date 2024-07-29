@@ -7,16 +7,20 @@ function setMovieList(URL) {
         .then((data) => {
             document.querySelector("#cards").innerHTML = "";
 
-            data.results.forEach((element) => {
-                let posterPath = element["poster_path"] === null ? "https://t4.ftcdn.net/jpg/03/00/32/13/360_F_300321387_gPEMsHdZPAWO2HfqfwEXUfy5MwPvq8AM.jpg" : "https://image.tmdb.org/t/p/w500" + element["poster_path"];
-                let title = element["original_title"];
-                let overview = element["overview"];
-                let id = element["id"];
-                let rating = element["vote_average"];
+            data.results
+                .filter((element) => {
+                    return element["poster_path"] !== null; // 안 나오는 이미지는 아예 뜨지 않도록 수정
+                })
+                .forEach((element) => {
+                    let posterPath = "https://image.tmdb.org/t/p/w500" + element["poster_path"];
+                    let title = element["original_title"];
+                    let overview = element["overview"];
+                    let id = element["id"];
+                    let rating = element["vote_average"];
 
-                const temp = document.createElement("div");
-                temp.className = "col";
-                temp.innerHTML = `
+                    const temp = document.createElement("div");
+                    temp.className = "col";
+                    temp.innerHTML = `
                 <div class="card" onclick="getId(${id})">
                     <img src="${posterPath}" class="card-img-top" alt="..." />
                     <div class="card-body">
@@ -27,8 +31,8 @@ function setMovieList(URL) {
                 </div>
                 `;
 
-                document.querySelector("#cards").append(temp);
-            });
+                    document.querySelector("#cards").append(temp);
+                });
         })
         .catch((error) => console.error("Error:", error));
 }
